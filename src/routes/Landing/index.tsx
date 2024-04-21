@@ -26,7 +26,7 @@ export default function Landing({setAuth}: { setAuth: Dispatch<SetStateAction<bo
                 user: username,
                 pass: password
             }
-            axios.post("./login.php", data)
+            await axios.post("./login.php", data)
             .then(function (response) {
                 if (response.data['login'] === false) {
                     setError("Invalid Username or Password")

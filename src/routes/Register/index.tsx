@@ -84,7 +84,7 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
                 email: email,
                 first_name: first_name
             }
-            axios.post("./register.php", data)
+            await axios.post("./register.php", data)
             .then(function (response) {
                 if (response.data['register'] === false) {
                     setError(response.data['error'] + " Already In Use. Please Use a Different " + response.data['error'])
