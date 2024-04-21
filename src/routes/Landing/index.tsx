@@ -44,7 +44,7 @@ export default function Landing({setAuth}: { setAuth: Dispatch<SetStateAction<bo
         }
 
 
-    }, [username, password]);
+    }, [username, password, setAuth]);
 
 
     if (sessionStorage.getItem("token") == "t") {
