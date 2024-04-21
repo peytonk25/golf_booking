@@ -4,10 +4,10 @@ import {Navigate} from "react-router-dom";
 import styles from "./styles.module.css";
 import axios from "axios";
 
-type parsedAuth = {
+/*type parsedAuth = {
     userID: string,
     token: string,
-}
+} */
 
 export default function Landing({setAuth}: { setAuth: Dispatch<SetStateAction<boolean>> }) {
     const [username, setUsername] = useState("")
@@ -19,7 +19,7 @@ export default function Landing({setAuth}: { setAuth: Dispatch<SetStateAction<bo
     const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         setError("")
-        if (username.trim() == "" || password.trim() == "") {
+        if (username.trim() === "" || password.trim() === "") {
             setError("Invalid Username or Password")
         } else {
             const data = {
@@ -28,7 +28,7 @@ export default function Landing({setAuth}: { setAuth: Dispatch<SetStateAction<bo
             }
             axios.post("./login.php", data)
             .then(function (response) {
-                if (response.data['login'] == false) {
+                if (response.data['login'] === false) {
                     setError("Invalid Username or Password")
                     setColor(styles.errorC)
                 } else {
@@ -47,7 +47,7 @@ export default function Landing({setAuth}: { setAuth: Dispatch<SetStateAction<bo
     }, [username, password, setAuth]);
 
 
-    if (sessionStorage.getItem("token") == "t") {
+    if (sessionStorage.getItem("token") === "t") {
         return <Navigate to="/"/>
     }
     return (

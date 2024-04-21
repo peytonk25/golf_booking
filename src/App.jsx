@@ -1,5 +1,5 @@
 import React from "react";
-import {SetStateAction, useState, useCallback} from "react";
+import {useState} from "react";
 import {Route, BrowserRouter as Router, Routes} from 'react-router-dom';
 import {ProtectedLayout, PublicLayout} from "./components/Routes/index.tsx";
 
@@ -12,6 +12,7 @@ import Register from "./routes/Register/index.tsx"
 export default function App() {
   const [isAuth, setAuth] = useState((!!sessionStorage.getItem("token")))
 
+  console.log(isAuth)
 
   return (
     <Router >

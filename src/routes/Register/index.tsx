@@ -1,13 +1,13 @@
 import {Dispatch, SetStateAction, useState, useCallback} from "react";
-import {Navigate, useAsyncValue} from "react-router-dom";
+import {Navigate} from "react-router-dom";
 import {Link} from "react-router-dom";
 import axios from "axios";
 import styles from "./styles.module.css"
 
-type parsedAuth = {
+/*type parsedAuth = {
     userID: string,
     token: string,
-}
+} */
 export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<boolean>> }) {
 
     const [username, setUsername] = useState("")
@@ -17,7 +17,7 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
     const [first_name, setFirst] = useState("")
     const [error_message, setError] = useState("")
     const [eColor, setEColor] = useState(styles['errorC'])
-    const [allow, setAllow] = useState(false)
+    //const [allow, setAllow] = useState(false)
 
 
     const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
@@ -25,12 +25,12 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
 
         setError("")
 
-        let usernameT = /^[a-zA-Z0-9._!]+$/.test(username) && username != ""
-        let passwordT = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32}$/.test(password) && password != "" && password == confirmp
-        let first_nameT = /^[a-zA-Z]+$/.test(first_name) && first_name != ""
-        let emailT = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email) && email != ""
+        let usernameT = /^[a-zA-Z0-9._!]+$/.test(username) && username !== ""
+        let passwordT = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,32}$/.test(password) && password !== "" && password === confirmp
+        let first_nameT = /^[a-zA-Z]+$/.test(first_name) && first_name !== ""
+        let emailT = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email) && email !== ""
 
-        if (username == "") {
+        if (username === "") {
             setError('Please Enter a Username')
             setEColor(styles.errorC)
         }
@@ -58,7 +58,7 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
             setError('Password must contain 1 special character')
             setEColor(styles.errorC)
         }
-        if (password != confirmp) {
+        if (password !== confirmp) {
             setError('Passwords do not match')
             setEColor(styles.errorC)
         }
@@ -86,7 +86,7 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
             }
             axios.post("./register.php", data)
             .then(function (response) {
-                if (response.data['register'] == false) {
+                if (response.data['register'] === false) {
                     setError(response.data['error'] + " Already In Use. Please Use a Different " + response.data['error'])
                     setEColor(styles.errorC)
                 } else {
@@ -104,7 +104,7 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
     }, [username, password, confirmp, email, first_name, setAuth]);
 
 
-    if (sessionStorage.getItem("token") == "t") {
+    if (sessionStorage.getItem("token") === "t") {
         return <Navigate to="/"/>
     }
     return (

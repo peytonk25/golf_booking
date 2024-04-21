@@ -1,4 +1,4 @@
-import {Navigate, Outlet, useLocation, redirect, OutletProps} from "react-router-dom";
+import {Navigate, Outlet, useLocation, OutletProps} from "react-router-dom";
 
 interface CustomOutletProps extends OutletProps {
     auth?: boolean
@@ -6,7 +6,7 @@ interface CustomOutletProps extends OutletProps {
 export function ProtectedLayout(props: CustomOutletProps): React.ReactElement {
     const location = useLocation()
 
-    if (sessionStorage.getItem("token") != "") {
+    if (sessionStorage.getItem("token") !== "") {
         return (<Navigate to="/login" state={{from: location}} />)
     }
 
