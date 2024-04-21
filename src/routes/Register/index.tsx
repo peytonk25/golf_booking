@@ -20,29 +20,6 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
     const [allow, setAllow] = useState(false)
 
 
-    const sendInfo = () => {
-        const data = {
-            user: username,
-            pass: password,
-            email: email,
-            first_name: first_name
-        }
-        axios.post("./register.php", data)
-        .then(function (response) {
-            if (response.data['register'] == false) {
-                setError(response.data['error'] + " Already In Use. Please Use a Different " + response.data['error'])
-                setEColor(styles.errorC)
-            } else {
-                sessionStorage.setItem("user", response.data['user'])
-                sessionStorage.setItem("token", "")
-                setAuth(true)
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-
-    }
     const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -101,7 +78,26 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
 
         if (usernameT && passwordT && emailT && first_nameT) {
             setError("")
-            sendInfo()
+            const data = {
+                user: username,
+                pass: password,
+                email: email,
+                first_name: first_name
+            }
+            axios.post("./register.php", data)
+            .then(function (response) {
+                if (response.data['register'] == false) {
+                    setError(response.data['error'] + " Already In Use. Please Use a Different " + response.data['error'])
+                    setEColor(styles.errorC)
+                } else {
+                    sessionStorage.setItem("user", response.data['user'])
+                    sessionStorage.setItem("token", "")
+                    setAuth(true)
+                }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
         }
 
 
