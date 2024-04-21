@@ -101,7 +101,7 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
         }
 
 
-    }, [username, password, confirmp, email, first_name]);
+    }, [username, password, confirmp, email, first_name, setAuth]);
 
 
     if (sessionStorage.getItem("token") == "t") {
