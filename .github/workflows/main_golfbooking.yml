@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy PHP app to Azure Web App - GolfBooking
+name: Build and deploy Node.js app to Azure Web App - GolfBooking
 
 on:
   push:
@@ -16,26 +16,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
         with:
-          php-version: '8.2'
-        env:
-          UDB_NAME: ${{secrets.UDBNAME}}
-          UID: ${{secrets.UID}}
-          UPWD: ${{secrets.UPWD}}
-          UHOST: ${{secrets.UHOST}}
-          UPORT: ${{secrets.UPORT}}
+          node-version: '20.x'
 
-      - name: Check if composer.json exists
-        id: check_files
-        uses: andstor/file-existence-action@v1
-        with:
-          files: 'composer.json'
-
-      - name: Run composer install if composer.json exists
-        if: steps.check_files.outputs.files_exists == 'true'
-        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm run test --if-present
 
       - name: Zip artifact for deployment
         run: zip release.zip ./* -r
@@ -43,7 +33,7 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: php-app
+          name: node-app
           path: release.zip
 
   deploy:
@@ -59,7 +49,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: php-app
+          name: node-app
 
       - name: Unzip artifact for deployment
         run: unzip release.zip
@@ -67,13 +57,13 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_CA7B9587AE9D4F64B79B6F591B860A4E }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2D9048D25974422F9069DA7027B87B10 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_0A3FC8DBAAC145B89F33A6EA732D9078 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_0B4DF121B9F94AED9B90B93503D1508F }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_239424332CD6416D9CB4496701725092 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_8703669A1EF44AAA9336DB7747BA828D }}
 
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
         with:
           app-name: 'GolfBooking'
           slot-name: 'Production'
