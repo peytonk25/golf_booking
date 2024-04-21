@@ -6,7 +6,7 @@ interface CustomOutletProps extends OutletProps {
 export function ProtectedLayout(props: CustomOutletProps): React.ReactElement {
     const location = useLocation()
 
-    if (!sessionStorage.getItem("token")) {
+    if (sessionStorage.getItem("token") != "") {
         return (<Navigate to="/login" state={{from: location}} />)
     }
 

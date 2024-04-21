@@ -1,8 +1,7 @@
 import {Dispatch, SetStateAction, useState, useCallback} from "react";
 import {Navigate, useAsyncValue} from "react-router-dom";
 import {Link} from "react-router-dom";
-import PasswordChecklist from "react-password-checklist";
-import PasswordStrengthBar from "react-password-strength-bar";
+import axios from "axios";
 import styles from "./styles.module.css"
 
 type parsedAuth = {
@@ -21,9 +20,27 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
     const [allow, setAllow] = useState(false)
 
 
-    const sendInfo = async () => {
-
-        console.log("WOOP")
+    function sendInfo() {
+        const data = {
+            user: username,
+            pass: password,
+            email: email,
+            first_name: first_name
+        }
+        axios.post("./register.php", data)
+        .then(function (response) {
+            if (response.data['register'] == false) {
+                setError(response.data['error'] + " Already In Use. Please Use a Different " + response.data['error'])
+                setEColor(styles.errorC)
+            } else {
+                sessionStorage.setItem("user", response.data['user'])
+                sessionStorage.setItem("token", "")
+                setAuth(true)
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
 
     }
     const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
@@ -36,12 +53,16 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
         let first_nameT = /^[a-zA-Z]+$/.test(first_name) && first_name != ""
         let emailT = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email) && email != ""
 
-        if (!usernameT) {
-            setError('Invalid Username')
+        if (username == "") {
+            setError('Please Enter a Username')
+            setEColor(styles.errorC)
+        }
+        if (/^[a-zA-Z0-9._!]+$/.test(username)) {
+            setError('Invalid Character in Username')
             setEColor(styles.errorC)
         }
         if (password.length < 6) {
-            setError('Password must have minimum 6 characters')
+            setError('Password Must Have Minimum 6 Characters')
             setEColor(styles.errorC)
         }
         if (!/[A-Z]/.test(password)) {
@@ -72,29 +93,39 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
             setError('Please Enter your Name')
             setEColor(styles.errorC)
         }
+        if (!/[0-9]/.test(password)) {
+            setError('Name Must Contain Only Letters')
+            setEColor(styles.errorC)
+        }
+
 
         if (usernameT && passwordT && emailT && first_nameT) {
             setError("")
             sendInfo()
         }
 
-        console.log(username, password, confirmp, email, first_name)
 
     }, [username, password, confirmp, email, first_name]);
 
+
+    if (sessionStorage.getItem("token") == "t") {
+        return <Navigate to="/"/>
+    }
     return (
-        <div>
-            REGISTER
-            <form onSubmit={handleSubmit}>
-                <input type="text" placeholder="Username" onChange={event => setUsername(event.target.value)}/>
-                <input type="password" placeholder="Password" onChange={event => setPassword(event.target.value)}/>
-                <input type="password" placeholder="Confirm Password" onChange={event => setConfirm(event.target.value)}/>
+        <div className={styles.container}>
+            <form onSubmit={handleSubmit} className={styles.formHolder}>
+                <div className={styles.header}>Make An Account!</div>
+                <input type="text" placeholder="Username" className={styles.username} onChange={event => setUsername(event.target.value)}/>
+                <input type="password" placeholder="Password" className={styles.password} onChange={event => setPassword(event.target.value)}/>
+                <input type="password" placeholder="Confirm Password" className={styles.password} onChange={event => setConfirm(event.target.value)}/>
                 
-                <input type="text" placeholder="Email" onChange={event => setEmail(event.target.value)}/>
-                <input type="text" placeholder="First Name" onChange={event => setFirst(event.target.value)}/>
+                <input type="text" placeholder="Email" className={styles.username} onChange={event => setEmail(event.target.value)}/>
+                <input type="text" placeholder="First Name" className={styles.username} onChange={event => setFirst(event.target.value)}/>
                 <div className={eColor}>{error_message}</div>
                 
-                <input type="submit" value="Register!"/> 
+                <input type="submit" className={styles.submit} value="Register!"/>
+                <div className={styles.account}>Already Have an Account?</div>
+                <Link to={"/login"}className={styles.login}>Login Here!</Link>
             </form>
             
         </div>

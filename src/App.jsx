@@ -21,11 +21,10 @@ export default function App() {
         <Route element={<PublicLayout />}>
           <Route path="/login" element={<Landing setAuth={setAuth} />} />
           <Route path="/register" element={<Register setAuth={setAuth} />} />
-          <Route path="/" element={<Homepage />} />
         </Route>
 
         <Route element={<ProtectedLayout />}>
-          
+          <Route path="/" element={<Homepage />} />
         </Route>
         
 
