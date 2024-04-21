@@ -20,7 +20,7 @@ export default function Register({setAuth}: { setAuth: Dispatch<SetStateAction<b
     const [allow, setAllow] = useState(false)
 
 
-    function sendInfo() {
+    const sendInfo = () => {
         const data = {
             user: username,
             pass: password,
